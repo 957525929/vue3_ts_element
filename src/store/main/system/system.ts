@@ -11,7 +11,11 @@ const systemModule: Module<ISystemState, IRootState> = {
       usersList: [],
       usersCount: 0,
       roleList: [],
-      roleCount: 0
+      roleCount: 0,
+      goodsList: [],
+      goodsCount: 0,
+      menuList: [],
+      menuCount: 0
     }
   },
   mutations: {
@@ -26,20 +30,29 @@ const systemModule: Module<ISystemState, IRootState> = {
     },
     changeRoleCount(state, count: number) {
       state.roleCount = count
+    },
+    changeGoodsList(state, list: any[]) {
+      state.goodsList = list
+    },
+    changeGoodsCount(state, count: number) {
+      state.goodsCount = count
+    },
+    changeMenuList(state, list: any[]) {
+      state.menuList = list
+    },
+    changeMenuCount(state, count: number) {
+      state.menuCount = count
     }
   },
   getters: {
     pageListData(state) {
       return (pageName: string) => {
-        // console.log(pageName, 'pageName')
-
         return (state as any)[`${pageName}List`]
-        // switch (pageName) {
-        //   case 'users':
-        //     return state.usersList
-        //   case 'role':
-        //     return state.roleList
-        // }
+      }
+    },
+    pageListCount(state) {
+      return (pageName: string) => {
+        return (state as any)[`${pageName}Count`]
       }
     }
   },
@@ -49,15 +62,6 @@ const systemModule: Module<ISystemState, IRootState> = {
       console.log(payload)
       const pageName = payload.pageName
       const pageUrl = `/${pageName}/list`
-
-      // switch (pageName) {
-      //   case 'user':
-      //     pageUrl = '/users/list'
-      //     break
-      //   case 'role':
-      //     pageUrl = '/role/list'
-      //     break
-      // }
 
       //2.对页面发生请求
       const pageResult = await getPageListData(pageUrl, payload.queryInfo)
