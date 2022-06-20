@@ -18,7 +18,7 @@ import UserInfo from './user-info.vue'
 import JheBreadcrumb, { IBreadcrumb } from '@/base-ui/breadcrumb'
 import { useStore } from '@/store'
 import { useRoute } from 'vue-router'
-import { pathMapVreadcrumbs } from '@/utils/map-menus'
+import { pathMapBreadcrumbs } from '@/utils/map-menus'
 
 export default defineComponent({
   components: {
@@ -41,7 +41,7 @@ export default defineComponent({
       const route = useRoute()
       const currentPath = route.path
 
-      return pathMapVreadcrumbs(userMenus, currentPath)
+      return pathMapBreadcrumbs(userMenus, currentPath)
     })
     return {
       isFold,
