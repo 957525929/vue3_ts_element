@@ -6,7 +6,9 @@ export function mapMenusToRoutes(userMenus: any[]): RouteRecordRaw[] {
   const routes: RouteRecordRaw[] = []
   //先去加载默认所有的routes
   const allRoutes: RouteRecordRaw[] = []
+
   const routeFiles = require.context('../router/main', true, /\.ts/)
+
   routeFiles.keys().forEach((key) => {
     const route = require('../router/main' + key.split('.')[1])
     allRoutes.push(route.default)
@@ -22,6 +24,7 @@ export function mapMenusToRoutes(userMenus: any[]): RouteRecordRaw[] {
           return route.path === menu.url
         })
         if (route) routes.push(route)
+
         if (!firstMenu) {
           firstMenu = menu
         }
@@ -31,6 +34,8 @@ export function mapMenusToRoutes(userMenus: any[]): RouteRecordRaw[] {
     }
   }
   _recurseGetRoute(userMenus)
+  console.log('routes', routes)
+
   return routes
 }
 
