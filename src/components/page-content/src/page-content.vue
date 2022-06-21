@@ -8,7 +8,11 @@
     >
       <!-- 1.header中的插槽 -->
       <template #headerHandler>
-        <el-button type="primary" size="medium" @click="handleNewClick"
+        <el-button
+          v-if="isCreate"
+          type="primary"
+          size="medium"
+          @click="handleNewClick"
           >新建用户</el-button
         >
       </template>
@@ -27,6 +31,7 @@
       <template #handler="scope">
         <div class="handle-btns">
           <el-button
+            v-if="isUpdate"
             icon="el-icon-edit"
             size="mini"
             type="text"
@@ -34,6 +39,7 @@
             >编辑</el-button
           >
           <el-button
+            v-if="isDelete"
             icon="el-icon-delete"
             size="mini"
             type="text"
@@ -60,6 +66,8 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from 'vue'
 import { useStore } from '@/store'
+import { usePermission } from '@/hooks/use-permission'
+
 import HyTable from '@/base-ui/table'
 
 export default defineComponent({
@@ -80,16 +88,23 @@ export default defineComponent({
   setup(props, { emit }) {
     const store = useStore()
 
+    // 0.获取操作的权限
+    const isCreate = usePermission(props.pageName, 'create')
+    const isUpdate = usePermission(props.pageName, 'update')
+    const isDelete = usePermission(props.pageName, 'delete')
+    const isQuery = usePermission(props.pageName, 'query')
+
     // 1.双向绑定pageInfo
-    const pageInfo = ref({ currentPage: 0, pageSize: 10 })
+    const pageInfo = ref({ currentPage: 1, pageSize: 10 })
     watch(pageInfo, () => getPageData())
 
     // 2.发送网络请求
     const getPageData = (queryInfo: any = {}) => {
+      if (!isQuery) return
       store.dispatch('system/getPageListAction', {
         pageName: props.pageName,
         queryInfo: {
-          offset: pageInfo.value.currentPage * pageInfo.value.pageSize,
+          offset: (pageInfo.value.currentPage - 1) * pageInfo.value.pageSize,
           size: pageInfo.value.pageSize,
           ...queryInfo
         }
@@ -138,6 +153,9 @@ export default defineComponent({
       dataCount,
       pageInfo,
       otherPropSlots,
+      isCreate,
+      isUpdate,
+      isDelete,
       handleDeleteClick,
       handleNewClick,
       handleEditClick
